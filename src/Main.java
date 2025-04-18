@@ -2,14 +2,39 @@ import java.util.Scanner;
 
 public class Main {
     static Book[] books = new Book[20];
+
     static void available(){
         System.out.println("\nAVAILABLE:");
         for(Book b : books){
             if(b == null || b.isCheckedOut){
                 continue;
             }
-            System.out.printf("%d - %s, %s\n", b.id, b.title, b.isbn);
+            System.out.printf("ID: %d - %s, %s\n", b.id, b.title, b.isbn);
         }
+        String command = "start";
+        Scanner in = new Scanner(System.in);
+        while(!command.equalsIgnoreCase("X")){
+            System.out.println("""
+C - to check out a book.
+X - to exit this screen.
+                    """);
+            command = in.nextLine().trim();
+            if(command.equalsIgnoreCase("X")){
+                return; //exit function immediately.
+            }else if(command.equalsIgnoreCase("C")) {
+                System.out.println("Enter book id: ");
+                int id = in.nextInt();
+                in.nextLine(); // throw away trailing new line
+                for (Book b : books) {
+                    if (b.id == id) {
+                        System.out.println("Enter your name: ");
+                        String name = in.nextLine().trim();
+                        b.checkOut(name);
+                        break;
+                    }
+                }
+            }//end else if
+        }//end while
     }
     static void checkedOut(){
         System.out.println("\nCHECKED-OUT:");
@@ -18,6 +43,31 @@ public class Main {
                 continue;
             }
             System.out.printf("%d - %s, %s\n", b.id, b.title, b.checkedOutTo);
+        }
+        String command = "start";
+        Scanner in = new Scanner(System.in);
+        while(!command.equalsIgnoreCase("X")){
+            System.out.println("""
+C - to check in a book.
+X - to exit this screen.
+                    """);
+            command = in.nextLine().trim();
+            if(command.equalsIgnoreCase("X")){
+                return; //exit function/method immediately
+            }else if(command.equalsIgnoreCase("C")) {
+                System.out.println("Enter id of book to check in: ");
+                int id = in.nextInt();
+                if (!command.isEmpty()) {
+                    for (Book b : books) {
+                        if (b.id == id) {
+                            b.checkIn();
+                            break;//exit loop
+                        }
+                    }
+                }
+            }else{
+                System.out.println("No such command at this level: " + command);
+            }
         }
     }
     public static void main(String[] args) {
@@ -45,7 +95,6 @@ public class Main {
             } else if (command == 2) {
                 //show checked out plus menu
                 checkedOut();
-
             } else {
                 //no such command
                 System.out.println("no such command: " + command);
